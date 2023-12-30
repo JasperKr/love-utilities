@@ -80,10 +80,10 @@ local function findErrorFile(t, line)
     end
 end
 
-return function(name)
+return function(name, options)
     local shaderFile, includedFiles, totalLines = loadShaderFile(name, 0)
 
-    local ran, shader = pcall(love.graphics.newShader, shaderFile)
+    local ran, shader = pcall(love.graphics.newShader, shaderFile, options)
     if not ran then
         local i = 0
         local errorPos = 0
