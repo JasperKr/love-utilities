@@ -119,6 +119,13 @@ return function(name, options)
         -- find the file that the error is in
         local fileName, startLine, endLine, included = findErrorFile({ includedFiles }, errorPos)
         -- subtract all included files from the errorPos that are before the errorPos in the file
+
+        -- catch #ifdef / #endif's that weren't closed, the error won't be on any lines in any file
+        if not included then
+            error("shader: [ " .. name .. " ] compilation failed\n" .. "couldn't find error in file" .. "\n" ..
+                shader)
+        end
+        
         local newErrorPos = errorPos
         for i, v in ipairs(included) do
             if v[3] < errorPos then
