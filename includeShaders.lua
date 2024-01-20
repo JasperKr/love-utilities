@@ -99,6 +99,8 @@ return function(name, options)
                 break
             end
         end
+        -- fixes an infinite loop
+        assert(errorPos ~= -1, shader)
         local prevLine = ""
         local errorLine = ""
         i = 0
