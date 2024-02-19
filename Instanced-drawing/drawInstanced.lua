@@ -75,7 +75,7 @@ function instancedDrawFunctions:draw(useShader, resetShader)
 
     self:clearInstances()
 
-    if useShader and resetShader then
+    if resetShader then
         love.graphics.setShader()
     end
 end
