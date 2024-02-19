@@ -40,11 +40,11 @@ local function newInstancedDrawer(bufferSize, shader, defaultData, vertexformat,
     return setmetatable(self, instancedDrawMetatable)
 end
 
-function instancedDrawFunctions:draw(useShader, resetShader)
+function instancedDrawFunctions:draw(useShader, resetShader, clearInstances)
     local amount = self.instanceAmount
     local changedBuffer = false
 
-    if useShader then
+    if useShader ~= false then
         love.graphics.setShader(self.instanceShader)
     end
 
@@ -73,9 +73,11 @@ function instancedDrawFunctions:draw(useShader, resetShader)
     end
     love.graphics.drawInstanced(self.instancedMesh, self.instanceAmount)
 
-    self:clearInstances()
+    if clearInstances ~= false then
+        self:clearInstances()
+    end
 
-    if resetShader then
+    if resetShader ~= false then
         love.graphics.setShader()
     end
 end
