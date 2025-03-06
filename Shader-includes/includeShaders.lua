@@ -424,26 +424,6 @@ local function getNameFromFilepath(path)
     return table.concat(finalName)
 end
 
-local tempKeys = {}
-local tempConcat = {}
-local function generateTableHash(data)
-    clear(tempKeys)
-
-    for key, value in pairs(data) do
-        table.insert(tempKeys, tostring(key))
-    end
-
-    table.sort(tempKeys)
-    clear(tempConcat)
-
-    for i, key in ipairs(tempKeys) do
-        table.insert(tempConcat, key)
-        table.insert(tempConcat, tostring(data[key]))
-    end
-
-    return table.concat(tempConcat)
-end
-
 --- Creates a new shader object from a file or a string.
 ---@param name string filepath or string of the shader
 ---@param options? {[1]: string?, debugname: string?, cache:boolean, id?:string, validateES?: boolean}|string options for the shader or the debugname
@@ -473,7 +453,6 @@ local function newShader(name, options, isComputeShader)
 
     local shaderCode = preprocessShader(name, options, options, esValidation)
 
-    local id = options.id or (generateTableHash(options) .. name)
     local shader, success
 
     if isComputeShader then
