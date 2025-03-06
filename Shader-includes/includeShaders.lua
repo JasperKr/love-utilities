@@ -1,5 +1,6 @@
-local defaultIncludePaths = {}    -- add your directories with shaders here (used for including files)
-local defaultShaderPaths = { "" } -- add your directories with shaders here (used for loading files)
+local defaultIncludePaths = {} -- add your directories with shaders here (used for including files)
+local errorOnShaderFailure = true
+local debugMode = true
 
 local clear = require("table.clear")
 
@@ -291,9 +292,9 @@ local function preprocessShader(name, options, compileVariables, esValidation)
 
     do
         if not love.filesystem.getInfo(name) and providedFilename then
-            for i = 1, #defaultShaderPaths do
-                if love.filesystem.getInfo(defaultShaderPaths[i] .. name) then
-                    name = defaultShaderPaths[i] .. name
+            for i = 1, #defaultIncludePaths do
+                if love.filesystem.getInfo(defaultIncludePaths[i] .. name) then
+                    name = defaultIncludePaths[i] .. name
                     break
                 end
             end
@@ -310,7 +311,7 @@ local function preprocessShader(name, options, compileVariables, esValidation)
             compileVariables)
     end
 
-    if DebugMode then
+    if debugMode then
         local status, warning = love.graphics.validateShader(esValidation, shaderCode)
         if not status then
             -- if the shader failed to compile, get error info
@@ -333,7 +334,7 @@ local function preprocessShader(name, options, compileVariables, esValidation)
             end
 
             if not providedFilename then
-                if ErrorOnShaderFailure then
+                if errorOnShaderFailure then
                     error("[NoTraceback]\nShader: " .. coloredString('"' .. "src/" .. name, "green") .. "\n" ..
                         warning, 2)
                 else
@@ -369,7 +370,7 @@ local function preprocessShader(name, options, compileVariables, esValidation)
                 errorName = fileName
             end
 
-            if ErrorOnShaderFailure then
+            if errorOnShaderFailure then
                 error("[NoTraceback]\nShader: " .. coloredString('"' .. "src/" .. errorName .. ":" ..
                         errorPos, "green") .. "\n\n" .. (fileName ~= name and ("Included in " .. name .. "\n") or "") ..
                     coloredString("previous line, " .. (errorPos - 1) .. ": " .. prevLine .. "\n" ..
@@ -461,7 +462,7 @@ local function newShader(name, options, isComputeShader)
         success, shader = pcall(love.graphics.newShader, shaderCode, options)
     end
 
-    if (not success or not shader) and ErrorOnShaderFailure then
+    if (not success or not shader) and errorOnShaderFailure then
         error("Shader: " .. name .. "\n" .. shader, 2)
     elseif not success then
         print("Shader: " .. name .. "\n" .. shader)
