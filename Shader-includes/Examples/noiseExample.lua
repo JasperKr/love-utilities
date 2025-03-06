@@ -3,7 +3,7 @@ local includeShaders = require "includeShaders"
 local shader
 function love.load()
     -- This will load the shader from the Examples folder
-    shader = includeShaders("Examples/noiseExample.glsl")
+    shader = includeShaders.newShader("Examples/noiseExample.glsl")
 end
 
 function love.draw()
